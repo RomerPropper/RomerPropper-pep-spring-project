@@ -1,9 +1,8 @@
 package com.example.controller;
 
-import org.apache.catalina.connector.Response;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
-import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
 import com.example.entity.Account;
@@ -13,7 +12,6 @@ import com.example.service.MessageService;
 
 import java.util.List;
 
-import javax.websocket.server.PathParam;
 
 
 /**
@@ -94,16 +92,13 @@ public class SocialMediaController {
         return ResponseEntity.status(200).body(foundMessage);
     }
 
-    @DeleteMapping(value = "/messages/{messageId}")
-    public ResponseEntity deleteMessageByMessageId(@PathVariable int messageId){
+    @GetMapping(value = "/accounts/{accountId}/messages")
+    public ResponseEntity getAllMessagesFromUser(@PathVariable int accountId){
 
-        Message deletedMessage = messageService.getMessageByMessageId(messageId);
+        List<Message> foundMessages = messageService.getAllMessagesFromUser(accountId);
 
-        if(deletedMessage != null){
-            messageService.deleteMessageByMessageId(messageId);
-            return ResponseEntity.status(200).body(1);
-        }
-        return ResponseEntity.status(200).body("");
+        return ResponseEntity.status(200).body(foundMessages);
+
     }
 
     @PatchMapping(value = "/messages/{messageId}")
@@ -117,12 +112,15 @@ public class SocialMediaController {
         return ResponseEntity.status(400).body("Error Updating Message");
     }
 
-    @GetMapping(value = "/accounts/{accountId}/messages")
-    public ResponseEntity getAllMessagesFromUser(@PathVariable int accountId){
+    @DeleteMapping(value = "/messages/{messageId}")
+    public ResponseEntity deleteMessageByMessageId(@PathVariable int messageId){
 
-        List<Message> foundMessages = messageService.getAllMessagesFromUser(accountId);
+        Message deletedMessage = messageService.getMessageByMessageId(messageId);
 
-        return ResponseEntity.status(200).body(foundMessages);
-
+        if(deletedMessage != null){
+            messageService.deleteMessageByMessageId(messageId);
+            return ResponseEntity.status(200).body(1);
+        }
+        return ResponseEntity.status(200).body("");
     }
 }

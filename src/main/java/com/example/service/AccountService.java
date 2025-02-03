@@ -19,11 +19,18 @@ public class AccountService {
     }
 
     public Account persistAccount(Account account){
-        return accountRepository.save(account);
+        if((account.getPassword().length() >= 4) && (account.getUsername().length() != 0)){
+            return accountRepository.save(account);
+        }
+        return null;
     }
 
     public Account doesUserExist(String username){
         return accountRepository.findAccountByUsername(username);
+    }
+
+    public Account verifyLogin(String username, String password){
+        return accountRepository.findAccountByUsernameAndPassword(username, password);
     }
 
 }
